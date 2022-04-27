@@ -1637,7 +1637,7 @@ async def callback_data(bot, update: CallbackQuery):
 
     if query_data == "start":
         buttons = [[
-            lineKeyboardButton('🛠 Updates Channel 🛠', url='https://t.me/+1D7BAGMgGwkxYTA1')
+            InlineKeyboardButton('🛠 Updates Channel 🛠', url='https://t.me/+1D7BAGMgGwkxYTA1')
         ],[
             InlineKeyboardButton('Help ⚙', callback_data="help")
         ]]
