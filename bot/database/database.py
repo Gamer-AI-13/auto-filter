@@ -34,7 +34,7 @@ class Database:
             pass
         
         return dict(
-            _id = group_id,
+            id = group_id,
             chat_ids = [{
                 "chat_id": channel_id,
                 "chat_name": channel_name
@@ -91,7 +91,7 @@ class Database:
         for group_id in await data.to_list(length=50): # No Need Of Even 50
             for y in group_id["chat_ids"]:
                 if int(y["chat_id"]) == int(channel_id):
-                    group_list.append(group_id["_id"])
+                    group_list.append(group_id["id"])
                 else:
                     continue
         return group_list
@@ -106,7 +106,7 @@ class Database:
         if connections is not None:
             return connections
 
-        connections = await self.col.find_one({'_id': group_id})
+        connections = await self.col.find_one({'id': group_id})
         
         if connections:
             self.cache[str(group_id)] = connections
@@ -122,10 +122,10 @@ class Database:
         """
         new = self.new_chat(group_id, channel_id, channel_name)
         update_d = {"$push" : {"chat_ids" : {"chat_id": channel_id, "chat_name" : channel_name}}}
-        prev = await self.col.find_one({'_id':group_id})
+        prev = await self.col.find_one({'id':group_id})
         
         if prev:
-            await self.col.update_one({'_id':group_id}, update_d)
+            await self.col.update_one({'id':group_id}, update_d)
             await self.update_active(group_id, channel_id, channel_name)
             await self.refresh_cache(group_id)
             
@@ -146,12 +146,12 @@ class Database:
         """
         group_id, channel_id = int(group_id), int(channel_id) # group_id and channel_id Didnt type casted to int for some reason
         
-        prev = self.col.find_one({"_id": group_id})
+        prev = self.col.find_one({"id": group_id})
         
         if prev:
             
             await self.col.update_one(
-                {"_id": group_id}, 
+                {"id": group_id}, 
                     {"$pull" : 
                         {"chat_ids" : 
                             {"chat_id":
@@ -178,7 +178,7 @@ class Database:
         #if connections is None:
         #db.collection.remove()
         try:
-          connections = await self.col.find_one({'_id': group_id})
+          connections = await self.col.find_one({'id': group_id})
           print(connections)
         except Exception as e:
           print(e)
@@ -200,11 +200,11 @@ class Database:
         A Funtion to update a chat's filter types in db
         """
         group_id = int(group_id)
-        prev = await self.col.find_one({"_id": group_id})
+        prev = await self.col.find_one({"id": group_id})
         
         if prev:
             try:
-                await self.col.update_one({"_id": group_id}, {"$set": {"types": settings}})
+                await self.col.update_one({"id": group_id}, {"$set": {"types": settings}})
                 await self.refresh_cache(group_id)
                 return True
             
@@ -219,7 +219,7 @@ class Database:
         """
         A Funtion to update a chat's configs in db
         """
-        prev = await self.col.find_one({"_id": group_id})
+        prev = await self.col.find_one({"id": group_id})
 
         if prev:
             try:
@@ -239,7 +239,7 @@ class Database:
         A Funtion to delete all documents related to a
         chat from db
         """
-        prev = await self.col.find_one({"_id": group_id})
+        prev = await self.col.find_one({"id": group_id})
         if prev:
             await self.delall_active(group_id)
             await self.delall_filters(group_id)
@@ -253,7 +253,7 @@ class Database:
         """
         A Funtion To Delete the chat's main db document
         """
-        await self.col.delete_one({"_id": group_id})
+        await self.col.delete_one({"id": group_id})
         await self.refresh_cache(group_id)
         
         return True
@@ -267,7 +267,7 @@ class Database:
         if self.cache.get(str(group_id)):
             self.cache.pop(str(group_id))
         
-        prev = await self.col.find_one({"_id": group_id})
+        prev = await self.col.find_one({"id": group_id})
         
         if prev:
             self.cache[str(group_id)] = prev
@@ -279,7 +279,7 @@ class Database:
         A Funtion to add a channel as an active chat the a connected group 
         (This Funtion will be used only if its the first time)
         """
-        templ = {"_id": group_id, "chats":[{"chat_id": channel_id, "chat_name": channel_name}]}
+        templ = {"id": group_id, "chats":[{"chat_id": channel_id, "chat_name": channel_name}]}
         
         try:
             await self.acol.insert_one(templ)
@@ -298,7 +298,7 @@ class Database:
         templ = {"$pull": {"chats": dict(chat_id = channel_id)}}
         
         try:
-            await self.acol.update_one({"_id": group_id}, templ)
+            await self.acol.update_one({"id": group_id}, templ)
         except Exception as e:
             print(e)
             pass
@@ -313,13 +313,13 @@ class Database:
         """
         group_id, channel_id = int(group_id), int(channel_id)
         
-        prev = await self.acol.find_one({"_id": group_id})
+        prev = await self.acol.find_one({"id": group_id})
         templ = {"$push" : {"chats" : dict(chat_id = channel_id, chat_name = channel_name)}}
         in_c = await self.in_active(group_id, channel_id)
         
         if prev:
             if not in_c:
-                await self.acol.update_one({"_id": group_id}, templ)
+                await self.acol.update_one({"id": group_id}, templ)
             else:
                 return False
         else:
@@ -335,7 +335,7 @@ class Database:
         if self.acache.get(str(group_id)):
             self.acache.get(str(group_id))
         
-        connection = await self.acol.find_one({"_id": group_id})
+        connection = await self.acol.find_one({"id": group_id})
 
         if connection:
             return connection
@@ -347,7 +347,7 @@ class Database:
         A Funtion to check if a chat id is in the active
         chat id list in db
         """
-        prev = await self.acol.find_one({"_id": group_id})
+        prev = await self.acol.find_one({"id": group_id})
         
         if prev:
             for x in prev["chats"]:
@@ -364,7 +364,7 @@ class Database:
         A Funtion to Delete all active chats of 
         a group from db
         """
-        await self.acol.delete_one({"_id":int(group_id)})
+        await self.acol.delete_one({"id":int(group_id)})
         await self.refresh_acache(group_id)
         return
 
@@ -377,7 +377,7 @@ class Database:
         if self.acache.get(str(group_id)):
             self.acache.pop(str(group_id))
         
-        prev = await self.acol.find_one({"_id": group_id})
+        prev = await self.acol.find_one({"id": group_id})
         
         if prev:
             self.acache[str(group_id)] = prev
