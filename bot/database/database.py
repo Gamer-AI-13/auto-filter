@@ -179,6 +179,7 @@ class Database:
         connections = await self.col.find_one({'_id': group_id})
         
         check_list = []
+        print(check_list)
         
         if connections:
             for x in connections["chat_ids"]:
