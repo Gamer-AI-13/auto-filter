@@ -184,6 +184,7 @@ class Database:
             for x in connections["chat_ids"]:
                 check_list.append(int(x.get("chat_id")))
             print(check_list)
+            print("hello")
             if int(channel_id) in check_list:
                 return True
         
