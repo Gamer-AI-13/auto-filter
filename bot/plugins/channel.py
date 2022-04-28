@@ -5,7 +5,7 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.errors import UserAlreadyParticipant, FloodWait
 
-from bot import VERIFY, LOGGER # pylint: disable=import-error
+from bot import VERIFY, LOGGER, SUDO_USER # pylint: disable=import-error
 from bot.bot import Bot # pylint: disable=import-error
 from bot.database import Database # pylint: disable=import-error
 from bot.plugins.auto_filter import recacher # pylint: disable=import-error
@@ -13,26 +13,26 @@ from bot.plugins.auto_filter import recacher # pylint: disable=import-error
 db = Database()
 logger = LOGGER(__name__)
 
-@Client.on_message(filters.command(["add"]) & filters.group, group=1)
+@Client.on_message(filters.command(["add"]) & filters.user(int(SUDO_USER)), group=1)
 async def connect(bot: Bot, update):
     """
     A Funtion To Handle Incoming /add Command TO COnnect A Chat With Group
     """
-    chat_id = update.chat.id
+    chat_id = SUDO_USER
     user_id = update.from_user.id if update.from_user else None
     target_chat = update.text.split(None, 1)
     global VERIFY
     
-    if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
-        admin_list = []
-        async for x in bot.iter_chat_members(chat_id=chat_id, filter="administrators"):
-            admin_id = x.user.id 
-            admin_list.append(admin_id)
-        admin_list.append(None)
-        VERIFY[str(chat_id)] = admin_list
+    #if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
+        #admin_list = []
+        #async for x in bot.iter_chat_members(chat_id=chat_id, filter="administrators"):
+            #admin_id = x.user.id 
+            #admin_list.append(admin_id)
+        #admin_list.append(None)
+        #VERIFY[str(chat_id)] = admin_list
 
-    if not user_id in VERIFY.get(str(chat_id)):
-        return
+    #@if not user_id in VERIFY.get(str###(chat_id)):
+        #return
     
     try:
         if target_chat[1].startswith("@"):
