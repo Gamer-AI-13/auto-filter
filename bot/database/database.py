@@ -176,9 +176,12 @@ class Database:
         #connections = self.cache.get(group_id)
         
         #if connections is None:
-        db.collection.remove()
-        connections = await self.col.find_one({'_id': group_id})
-        print(connections)
+        #db.collection.remove()
+        try:
+          connections = await self.col.find_one({'_id': group_id})
+          print(connections)
+        except Exception as e:
+          print(e)
         check_list = []
         
         if connections:
