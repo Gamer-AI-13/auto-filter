@@ -22,19 +22,19 @@ async def connect(bot: Bot, update):
     #chat_id = update.chat.id
     user_id = update.from_user.id if update.from_user else None
     target_chat = update.text.split(None, 1)
-    print(target_chat)
+    #print(target_chat)
     global VERIFY
     
-    if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
-        admin_list = []
-        async for x in bot.iter_chat_members(chat_id=chat_id, filter="administrators"):
-            admin_id = x.user.id 
-            admin_list.append(admin_id)
-        admin_list.append(None)
-        VERIFY[str(chat_id)] = admin_list
+    #if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
+        #admin_list = []
+        #async for x in bot#.iter_chat_members(chat_id=chat_id, filter="administrators"):
+            #admin_id = x.user.id 
+            #admin_list.append(admin_id)
+        #admin_list.append(None)
+        #VERIFY[str(chat_id)] = admin_list
 
-    if not user_id in VERIFY.get(str(chat_id)):
-        return
+    #if not user_id in VERIFY.get(str(chat_id)):
+        #return
     
     try:
         if target_chat[1].startswith("@"):
