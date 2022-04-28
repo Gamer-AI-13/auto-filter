@@ -173,10 +173,10 @@ class Database:
         """
         Check whether if the given channel id is in db or not...
         """
-        connections = self.cache.get(group_id)
+        #connections = self.cache.get(group_id)
         
-        if connections is None:
-            connections = await self.col.find_one({'_id': group_id})
+        #if connections is None:
+        connections = await self.col.find_one({'_id': group_id})
         
         check_list = []
         
