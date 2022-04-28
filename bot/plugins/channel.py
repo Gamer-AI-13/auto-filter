@@ -5,7 +5,7 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.errors import UserAlreadyParticipant, FloodWait
 
-from bot import VERIFY, LOGGER, SUDO_USER # pylint: disable=import-error
+from bot import VERIFY, LOGGER # pylint: disable=import-error
 from bot.bot import Bot # pylint: disable=import-error
 from bot.database import Database # pylint: disable=import-error
 from bot.plugins.auto_filter import recacher # pylint: disable=import-error
@@ -13,28 +13,26 @@ from bot.plugins.auto_filter import recacher # pylint: disable=import-error
 db = Database()
 logger = LOGGER(__name__)
 
-@Client.on_message(filters.command(["add"]) & filters.user(int(SUDO_USER)), group=1)
+@Client.on_message(filters.command(["add"]) & filters.group, group=1)
 async def connect(bot: Bot, update):
     """
     A Funtion To Handle Incoming /add Command TO COnnect A Chat With Group
     """
-    chat_id = SUDO_USER
-    #chat_id = update.chat.id
+    chat_id = update.chat.id
     user_id = update.from_user.id if update.from_user else None
     target_chat = update.text.split(None, 1)
-    #print(target_chat)
     global VERIFY
     
-    #if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
-        #admin_list = []
-        #async for x in bot#.iter_chat_members(chat_id=chat_id, filter="administrators"):
-            #admin_id = x.user.id 
-            #admin_list.append(admin_id)
-        #admin_list.append(None)
-        #VERIFY[str(chat_id)] = admin_list
+    if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
+        admin_list = []
+        async for x in bot.iter_chat_members(chat_id=chat_id, filter="administrators"):
+            admin_id = x.user.id 
+            admin_list.append(admin_id)
+        admin_list.append(None)
+        VERIFY[str(chat_id)] = admin_list
 
-    #if not user_id in VERIFY.get(str(chat_id)):
-        #return
+    if not user_id in VERIFY.get(str(chat_id)):
+        return
     
     try:
         if target_chat[1].startswith("@"):
@@ -105,15 +103,16 @@ async def connect(bot: Bot, update):
                 # Using 'if elif' instead of 'or' to determine 'file_type'
                 # Better Way? Make A PR
                 try:
+                    try:
+                        file_id = await bot.get_messages(channel_id, message_ids=msgs.id)
+                    except FloodWait as e:
+                        await asyncio.sleep(e.value)
+                        file_id = await bot.get_messages(channel_id, message_ids=msgs.id)
+                    except Exception as e:
+                        print(e)
+                        continue
+
                     if msgs.video:
-                        try:
-                            file_id = await bot.get_messages(channel_id, message_ids=msgs.message_id)
-                        except FloodWait as e:
-                            asyncio.sleep(e.x)
-                            file_id = await bot.get_messages(channel_id, message_ids=msgs.message_id)
-                        except Exception as e:
-                            print(e)
-                            continue
                         file_id = file_id.video.file_id
                         file_name = msgs.video.file_name[0:-4]
                         file_caption  = msgs.caption if msgs.caption else ""
@@ -121,14 +120,6 @@ async def connect(bot: Bot, update):
                         file_type = "video"
                     
                     elif msgs.audio:
-                        try:
-                            file_id = await bot.get_messages(channel_id, message_ids=msgs.message_id)
-                        except FloodWait as e:
-                            asyncio.sleep(e.x)
-                            file_id = await bot.get_messages(channel_id, message_ids=msgs.message_id)
-                        except Exception as e:
-                            print(e)
-                            continue
                         file_id = file_id.audio.file_id
                         file_name = msgs.audio.file_name[0:-4]
                         file_caption  = msgs.caption if msgs.caption else ""
@@ -136,19 +127,14 @@ async def connect(bot: Bot, update):
                         file_type = "audio"
                     
                     elif msgs.document:
-                        try:
-                            file_id = await bot.get_messages(channel_id, message_ids=msgs.message_id)
-                        except FloodWait as e:
-                            asyncio.sleep(e.x)
-                            file_id = await bot.get_messages(channel_id, message_ids=msgs.message_id)
-                        except Exception as e:
-                            print(str(e))
-                            continue
                         file_id = file_id.document.file_id
                         file_name = msgs.document.file_name[0:-4]
                         file_caption  = msgs.caption if msgs.caption else ""
                         file_size = msgs.document.file_size
                         file_type = "document"
+                    
+                    else:
+                        return
                     
                     for i in ["_", "|", "-", "."]: # Work Around
                         try:
@@ -197,26 +183,26 @@ async def connect(bot: Bot, update):
     await wait_msg.edit_text(f"Channel Was Sucessfully Added With <code>{len(data)}</code> Files..")
 
 
-@Client.on_message(filters.command(["del"]) & filters.user(int(SUDO_USER)), group=1)
+@Client.on_message(filters.command(["del"]) & filters.group, group=1)
 async def disconnect(bot: Bot, update):
     """
     A Funtion To Handle Incoming /del Command TO Disconnect A Chat With A Group
     """
-    #chat_id = update.chat.id
-    #user_id = update.from_user.id if update.from_user else None
-    #target_chat = update.text.split(None, 1)
+    chat_id = update.chat.id
+    user_id = update.from_user.id if update.from_user else None
+    target_chat = update.text.split(None, 1)
     global VERIFY
     
-    #if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
-        #admin_list = []
-        #async for x in bot.iter_chat_members(chat_id=chat_id, filter="administrators"):
-            #admin_id = x.user.id 
-            #admin_list.append(admin_id)
-        #admin_list.append(None)
-        #VERIFY[str(chat_id)] = admin_list
+    if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
+        admin_list = []
+        async for x in bot.iter_chat_members(chat_id=chat_id, filter="administrators"):
+            admin_id = x.user.id 
+            admin_list.append(admin_id)
+        admin_list.append(None)
+        VERIFY[str(chat_id)] = admin_list
 
-    #if not user_id in VERIFY.get(str(chat_id)):
-        #return
+    if not user_id in VERIFY.get(str(chat_id)):
+        return
     
     try:
         if target_chat[1].startswith("@"):
@@ -262,25 +248,25 @@ async def disconnect(bot: Bot, update):
     await wait_msg.edit_text("Sucessfully Deleted All Files From DB....")
 
 
-@Client.on_message(filters.command(["delall"]) & filters.user(int(SUDO_USER)), group=1)
+@Client.on_message(filters.command(["delall"]) & filters.group, group=1)
 async def delall(bot: Bot, update):
     """
     A Funtion To Handle Incoming /delall Command TO Disconnect All Chats From A Group
     """
-    chat_id=update.from_user.id
-    #user_id = update.from_user.id if update.from_user else None
+    chat_id=update.chat.id
+    user_id = update.from_user.id if update.from_user else None
     global VERIFY
     
-    #if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
-        #admin_list = []
-        #async for x in bot.iter_chat_members(chat_id=chat_id, filter="administrators"):
-            #admin_id = x.user.id 
-            #admin_list.append(admin_id)
-        #admin_list.append(None)
-        #VERIFY[str(chat_id)] = admin_list
+    if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
+        admin_list = []
+        async for x in bot.iter_chat_members(chat_id=chat_id, filter="administrators"):
+            admin_id = x.user.id 
+            admin_list.append(admin_id)
+        admin_list.append(None)
+        VERIFY[str(chat_id)] = admin_list
 
-    #if not user_id in VERIFY.get(str(chat_id)):
-        #return
+    if not user_id in VERIFY.get(str(chat_id)):
+        return
     
     await db.delete_all(chat_id)
     await recacher(chat_id, True, True, bot, update)
@@ -288,7 +274,7 @@ async def delall(bot: Bot, update):
     await update.reply_text("Sucessfully Deleted All Connected Chats From This Group....")
 
 
-@Client.on_message(filters.channel & (filters.video | filters.audio | filters.document) & ~filters.edited, group=0)
+@Client.on_message(filters.channel & (filters.video | filters.audio | filters.document), group=0)
 async def new_files(bot: Bot, update):
     """
     A Funtion To Handle Incoming New Files In A Channel ANd Add Them To Respective Channels..
@@ -359,4 +345,3 @@ async def new_files(bot: Bot, update):
             data.append(data_packets)
         await db.add_filters(data)
     return
-
