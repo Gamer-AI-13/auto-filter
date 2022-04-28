@@ -104,10 +104,10 @@ async def connect(bot: Bot, update):
                 # Better Way? Make A PR
                 try:
                     try:
-                        file_id = await bot.get_messages(channel_id, message_ids=msgs.id)
+                        file_id = await bot.get_messages(channel_id, message_ids=msgs.message_id)
                     except FloodWait as e:
                         await asyncio.sleep(e.value)
-                        file_id = await bot.get_messages(channel_id, message_ids=msgs.id)
+                        file_id = await bot.get_messages(channel_id, message_ids=msgs.message_id)
                     except Exception as e:
                         print(e)
                         continue
