@@ -18,7 +18,7 @@ async def connect(bot: Bot, update):
     """
     A Funtion To Handle Incoming /add Command TO COnnect A Chat With Group
     """
-    chat_id = update.text[5:]
+    chat_id = SUDO_USER
     #chat_id = update.chat.id
     user_id = update.from_user.id if update.from_user else None
     target_chat = update.text.split(None, 1)
