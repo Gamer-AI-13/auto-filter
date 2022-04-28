@@ -15,7 +15,7 @@ INVITE_LINK = {}
 ACTIVE_CHATS = {}
 db = Database()
 
-@Bot.on_message(filters.text & filters.user(int(SUDO_USER)) & ~filters.bot, group=0)
+@Bot.on_message(filters.text & filters.private & ~filters.bot, group=0)
 async def auto_filter(bot, update):
     """
     A Funtion To Handle Incoming Text And Reply With Appropriate Results
