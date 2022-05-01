@@ -15,7 +15,7 @@ INVITE_LINK = {}
 ACTIVE_CHATS = {}
 db = Database()
 
-@Bot.on_message(filters.text & filters.private & ~filters.bot, group=0)
+@Bot.on_message(filters.text & filters.incoming & ~filters.bot, group=0)
 async def auto_filter(bot, update):
     """
     A Funtion To Handle Incoming Text And Reply With Appropriate Results
@@ -34,6 +34,7 @@ async def auto_filter(bot, update):
         return
     
     results = []
+    print("got a text")
     
     global ACTIVE_CHATS
     global FIND
