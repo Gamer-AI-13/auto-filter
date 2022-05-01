@@ -178,9 +178,9 @@ class Database:
         connections = self.cache.get(group_id)
         
         if connections is None:
-            connections = self.col.find({'_id': group_id})
+            connections = self.col.find_one({'_id':group_id})
         print("hello")
-        print(self.col.find({'_id': group_id}))
+        print(self.col.find_one({'_id':group_id}))
         check_list = []
         
         if connections:
