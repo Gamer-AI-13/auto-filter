@@ -34,7 +34,7 @@ async def auto_filter(bot, update):
         return
     
     results = []
-    print("got a text")
+    
     
     global ACTIVE_CHATS
     global FIND
@@ -42,7 +42,7 @@ async def auto_filter(bot, update):
     configs = await db.find_chat(group_id)
     achats = ACTIVE_CHATS[str(group_id)] if ACTIVE_CHATS.get(str(group_id)) else await db.find_active(group_id)
     ACTIVE_CHATS[str(group_id)] = achats
-    
+    print("got a text")
     if not configs:
         return
     

@@ -11,20 +11,11 @@ from bot import VERIFY, SUDO_USER# pylint: disable=import-error
 @Client.on_message(filters.command(["settings"]) & filters.chat(SUDO_USER) & filters.group, group=1)
 async def settings(bot, update):
     
-    chat_id = update.chat.id
+    chat_id = int(SUDO_USER)
     user_id = update.from_user.id if update.from_user else None
     global VERIFY
 
-    if VERIFY.get(str(chat_id)) == None: # Make Admin's ID List
-        admin_list = []
-        async for x in bot.iter_chat_members(chat_id=chat_id, filter="administrators"):
-            admin_id = x.user.id 
-            admin_list.append(admin_id)
-        admin_list.append(None)
-        VERIFY[str(chat_id)] = admin_list
-
-    if not user_id in VERIFY.get(str(chat_id)): # Checks if user is admin of the chat
-        return
+    
     
     bot_info = await bot.get_me()
     bot_first_name= bot_info.first_name
