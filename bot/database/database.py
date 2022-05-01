@@ -180,13 +180,13 @@ class Database:
         if connections is None:
             connections = await self.col.find_one({'_id': group_id})
         print("hello")
-        print(await self.col.find_one({'_id':group_id}))
+        print(await self.col.find_one({'_id': group_id}))
         check_list = []
         
         if connections:
             for x in connections["chat_ids"]:
                 check_list.append(int(x.get("chat_id")))
-
+            print(check_list)
             if int(channel_id) in check_list:
                 return True
         
