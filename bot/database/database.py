@@ -171,16 +171,16 @@ class Database:
         return False
 
 
-    async def in_db(self, group_id: int, channel_id: int):
+    async def in_db(self, group_id, channel_id: int):
         """
         Check whether if the given channel id is in db or not...
         """
         connections = self.cache.get(group_id)
         
         if connections is None:
-            connections = await self.col.find_one({'_id': group_id})
+            connections = await self.col.find_one({'_id':int(group_id)})
         print("hello")
-        print(await self.col.find_one({'_id': group_id}))
+        print(await self.col.find_one({'_id':int(group_id)}))
         check_list = []
         
         if connections:
