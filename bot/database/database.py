@@ -178,9 +178,9 @@ class Database:
         connections = self.cache.get(group_id)
         
         if connections is None:
-            connections = await self.col.find_one({'_id': group_id})
+            connections = await self.col.find({'_id': group_id})
         print("hello")
-        print(await self.col.find_one({'_id': group_id}))
+        print(await self.col.find({'_id': group_id}))
         check_list = []
         
         if connections:
