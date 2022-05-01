@@ -180,7 +180,7 @@ class Database:
         if connections is None:
             connections = await self.col.find_one({'_id': group_id})
         print("hello")
-        print(connections)
+        print(await self.col.find_one({'_id': group_id}))
         check_list = []
         
         if connections:
