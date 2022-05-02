@@ -6,15 +6,15 @@ import re
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from bot import VERIFY, SUDO_USER# pylint: disable=import-error
+from bot import VERIFY, SUDO_USER # pylint: disable=import-error
 
 @Client.on_message(filters.command(["settings"]) & filters.chat(SUDO_USER))
 async def settings(bot, update):
-    
+    print("hello")
     chat_id = int(SUDO_USER)
     user_id = update.from_user.id if update.from_user else None
     #global VERIFY
-    print("hello")
+    
     bot_info = await bot.get_me()
     bot_first_name= bot_info.first_name
     
