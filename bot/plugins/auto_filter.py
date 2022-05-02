@@ -42,7 +42,7 @@ async def auto_filter(bot, update):
     configs = await db.find_chat(group_id)
     achats = ACTIVE_CHATS[str(group_id)] if ACTIVE_CHATS.get(str(group_id)) else await db.find_active(group_id)
     ACTIVE_CHATS[str(group_id)] = achats
-    print("got a text")
+    
     if not configs:
         return
     
@@ -59,7 +59,7 @@ async def auto_filter(bot, update):
     show_invite = (False if pm_file_chat == True else show_invite) # turn show_invite to False if pm_file_chat is True
     
     filters = await db.get_filters(group_id, query)
-    
+    print("got a text")
     if filters:
         for filter in filters: # iterating through each files
             file_name = filter.get("file_name")
