@@ -8,7 +8,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot import VERIFY, SUDO_USER # pylint: disable=import-error
 
-@Client.on_message(filters.command(["settings"]) & filters.chat(SUDO_USER))
+@Client.on_message(filters.command(["settings"]))# & filters.chat(SUDO_USER))
 async def settings(bot, update):
     print("hello")
     chat_id = int(SUDO_USER)
