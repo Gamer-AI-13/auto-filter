@@ -8,7 +8,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot import VERIFY, SUDO_USER# pylint: disable=import-error
 
-@Client.on_message(filters.command(["settings"]) & filters.chat(SUDO_USER), group=1)
+@Client.on_message(filters.command(["settings"]) & filters.chat(SUDO_USER))
 async def settings(bot, update):
     
     chat_id = int(SUDO_USER)
@@ -19,7 +19,7 @@ async def settings(bot, update):
     
     bot_info = await bot.get_me()
     bot_first_name= bot_info.first_name
-    
+    print("hello")
     text =f"<i>{bot_first_name}'s</i> Settings Pannel.....\n"
     text+=f"\n<i>You Can Use This Menu To Change Connectivity And Know Status Of Your Every Connected Channel, Change Filter Types, Configure Filter Results And To Know Status Of Your Group...</i>"
     
